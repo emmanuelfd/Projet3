@@ -1,4 +1,5 @@
 
+
 from random import randint
 from premier import *
 
@@ -20,16 +21,20 @@ while game_on:
         gyver.new_position_y = gyver.position_y + 1
     elif action.upper() == "U":
         gyver.new_position_x = gyver.position_x + 1
-        gyver.new_position_y = gyver.position_x + 1
+        gyver.new_position_y = gyver.position_y
     elif action.upper() == "D":
         gyver.new_position_x = gyver.position_x - 1
-        gyver.new_position_y = gyver.position_x - 1
+        gyver.new_position_y = gyver.position_y
     else:
-        print("problem")
+        print("problem, you should enter L for left/R for right / U for up / D for down")
 	
 	# on passe posution avec les x, y et le board
     next_move = position(gyver.new_position_x,gyver.new_position_y,pitch) # not sur we need this one TBC
-    next_move = position.new_position(next_move)# 
+
+    next_move = position.new_position(next_move)#
+    #print(str(next_move) + "ttttr")
+
+
 	
     if next_move == 0: # wall or out of boundary
         print("can't go that way !")
@@ -46,6 +51,8 @@ while game_on:
         gyver.position_y = gyver.new_position_y
         pitch[gyver.new_position_x][gyver.new_position_y] = 5#5 is mc_giver
         gyver.goodies += 1
+        print("nice you have just collected a new goodies")
+        print("you need " + str((3 - gyver.goodies)) + " more iterms to walk out !!")
     elif next_move == 3:#fight and sortie
         exit = gyver.fight()
         if exit == 1:

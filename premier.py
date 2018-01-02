@@ -10,7 +10,7 @@ class board_game:
     
     @classmethod		
     def initialize_board(self):
-        with open('FichierDeTest.txt','r') as f:
+        with open('FichierDeTest_debug.txt','r') as f:
             board = []
             for line in f:
                 i=0
@@ -44,7 +44,7 @@ class mc_gyver:
     def __init__(self):
         """Mcgyver get - number of object son"""
         self.goodies = 0 # items collected
-        self.position_x = 0 # with board[x][y]
+        self.position_x = 0 # starting position with board[x][y]
         self.position_y = 0
         self.new_position_x = 0 # with board[x][y]
         self.new_position_y = 0
@@ -68,6 +68,7 @@ class position:
         """method to compute new positin for McGyver"""
 
         cell = self.board[self.position_x][self.position_y]
+
         if self.position_x < 0 or self.position_y < 0: # we go out the board game
             move = 0#no move
         if cell == 0: # wall ! can't move
@@ -75,11 +76,8 @@ class position:
         elif cell == 2 or cell == 3 or cell == 4:
             move = 2#move +you got an item?
         elif cell == 9:
-            move == 3#means fight to exit
+            move = 3#means fight to exit
         else:
             move = 1#RAS move that's it		
 
         return move
-		
-	
-
