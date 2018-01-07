@@ -1,4 +1,5 @@
 from random import randint
+import os
 
 class board_game:
     BOARD = []
@@ -9,8 +10,10 @@ class board_game:
         pass
     
     @classmethod		
-    def initialize_board(self):
-        with open('FichierDeTest_debug.txt','r') as f:
+    def initialize_board(self,layout):
+        directory = os.path.dirname(__file__)##get the path of the current file
+        path_to_file = os.path.join(directory, "layout", str(layout) + "_layout.txt")#go to layout folder and select the right lqyout		
+        with open(path_to_file,'r') as f:
             board = []
             for line in f:
                 i=0
