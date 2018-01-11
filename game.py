@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+# coding: utf-8
 
 import pygame
 from pygame.locals import *
@@ -5,58 +7,55 @@ from random import randint
 from premier import *
 
 
-pitch = board_game.initialize_board(1)#load layout #1
+pitch = BoardGame.initialize_board(1)#load layout #1
 
-gyver = mc_gyver()
+gyver = McGyver()
 game_on = True# true means games is on
 
 print(pitch)
 
 pygame.init()#pygame initialization
 
-fenetre = pygame.display.set_mode((450, 450))#because 450 is 30pixel per sprite
-fond = pygame.image.load("fond.jpg").convert_alpha()#assign variable for background
-carre = pygame.image.load("mur.png").convert_alpha()#assign variable for wall
-item = pygame.image.load("item.png").convert_alpha()#assign variable for items
-arrivee = pygame.image.load("exit.png").convert_alpha()##assign variable for exit picture
-dk = pygame.image.load("dk.png").convert_alpha()#assign variable for donkey
-fenetre.blit(fond,(0,0))#load background on screen
-
-
+window = pygame.display.set_mode((450, 450))#because 450 is 30pixel per sprite
+background = pygame.image.load("picture/fond.jpg").convert_alpha()#assign variable for background
+square = pygame.image.load("picture/mur.png").convert_alpha()#assign variable for wall
+item = pygame.image.load("picture/item.png").convert_alpha()#assign variable for items
+exit = pygame.image.load("picture/exit.png").convert_alpha()##assign variable for exit picture
+dk = pygame.image.load("picture/dk.png").convert_alpha()#assign variable for donkey
+window.blit(background,(0,0))#load background on screen
 
 while game_on:
-
-
 	
     pygame.time.Clock().tick(30)#avoid  pitcture to blink
-    fenetre.blit(fond,(0,0))#reload the background to hide old position of giver
-	
+    window.blit(background,(0,0))#reload the background to hide old position of giver
+
+    ##pitch = BoardGame.load_board(pitch) ## a tester 
+    
 ##reload stuff on the board 
     x=0
     for cases in pitch:
         y=0
         for case in cases:
             if case == 0:
-                fenetre.blit(carre,(y,x))
+                window.blit(square,(y,x))
                 y += 30
          
             elif case == 2 or case == 3 or case == 4:#on pose les items
-                fenetre.blit(item,(y,x))
+                window.blit(item,(y,x))
                 y += 30
                 
             elif case == 9:#on pose l arrivee
-                fenetre.blit(arrivee,(y,x))
+                window.blit(exit,(y,x))
                 y += 30
 
             elif case == 5:#on pose l arrivee
-                fenetre.blit(dk,(y,x))
+                window.blit(dk,(y,x))
                 pygame.display.flip()
                 y += 30
                 
             else:
                 y +=30
         x+=30
-   
 
     pygame.display.flip()
 
@@ -96,13 +95,13 @@ while game_on:
             gyver.new_position_x = gyver.position_x - 1
             gyver.new_position_y = gyver.position_y
 	
-	# on passe posution avec les x, y et le board
-    next_move = position(gyver.new_position_x,gyver.new_position_y,pitch) # not sur we need this one TBC
+    print(gyver.new_position_x)
+    print(gyver.new_position_y)
+    #on passe posution avec les x, y et le board
+    next_move = Position(gyver.new_position_x,gyver.new_position_y,pitch) # not sur we need this one TBC
 
-    next_move = position.new_position(next_move)#
+    next_move = Position.new_position(next_move)#
     #print(str(next_move) + "ttttr")
-
-
 	
     if next_move == 0: # wall or out of boundary
         print("can't go that way !")
@@ -127,7 +126,7 @@ while game_on:
             print("well you are out!!")
             game_on = False#breaking the while to stop the game	
         else:
-            print("you lost! remember to collet the 3 items first !!")
+            print("you lost! remember to cocllet  3 items first !!")
             game_on = False #breaking the while to stop the game	
     else:
         print("problem move")#shouldn't enter here

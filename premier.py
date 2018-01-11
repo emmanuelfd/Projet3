@@ -1,51 +1,86 @@
+#! /usr/bin/env python3
+# coding: utf-8
 from random import randint
 import os
 
-class board_game:
+
+class BoardGame:
+    """in order to create the board game + loading items"""
     BOARD = []
     SIZE = 16
 
-	
     def __init__(self):
         pass
-    
-    @classmethod		
-    def initialize_board(self,layout):
-        directory = os.path.dirname(__file__)##get the path of the current file
-        path_to_file = os.path.join(directory, "layout", str(layout) + "_layout.txt")#go to layout folder and select the right lqyout		
-        with open(path_to_file,'r') as f:
+
+    @classmethod
+    def initialize_board(self, layout):
+        """initializion : load the layout from file to build a 2D maze (lists in lists)
+        + loading 3 items at random position + loading pictures
+        """
+        directory = os.path.dirname(__file__)##get the path of the this file
+        #go to layout folder and select the layout set in the fct call
+        path_to_file = os.path.join(directory, "layout", str(layout) + "_layout.txt")
+        with open(path_to_file, 'r') as file:
             board = []
-            for line in f:
-                i=0
-                e=[] # slice line in a list
+            for line in file:
+                i = 0
+                list_second = [] # slice line in a list
                 while i < 15: #not working for class variable - to avoid newline caracter
-                    e.append(int(line[i]))# in integer rather str for later
+                    list_second.append(int(line[i]))# in integer rather str for later
                     i += 1
-                board.append(e)#add  line to the global list
+                board.append(list_second)#add line to the global list
 
-       
-			
-        i=1
+        i = 1
         while i < 4: #3 items to drop (4 -1)
-            random_x = randint(0,14) # random coordinate in the board
-            random_y = randint(0,14)
+            random_x = randint(0, 14) # random coordinate in the board
+            random_y = randint(0, 14)
 
-            random_item = board[random_x][random_y] #check the value 
-			
-            if random_item ==1: # if not a wall
-                board[random_x][random_y] = i + 1 # change from 1 to other int 
-                i += 1#incrementation - new find a place for new item
-			
+            random_item = board[random_x][random_y] #check the value
+
+            if random_item == 1: # if not a wall
+                board[random_x][random_y] = i + 1 # change from 1 to other int
+                i += 1#incrementation - find a place for next item
+
             else:
                 continue # it's a wall back to the while, no incrementaton another try/
 
         return board
-		
 
-class mc_gyver:
+    def load_board(self, board, window, square, item, dk, wayout):
+        """load pictures using pygame - board, window, square, item, dk, wayout"""
+        line_x = 0#first line
+        for cases in board:
+            cell_y = 0#first column
+            for case in cases:
+                if case == 0:
+                    window.blit(square, (cell_y, line_x))
+                    cell_y += 30#30 because cell is 30 px - so go to next cell
+
+                elif case == 2 or case == 3 or case == 4:#if items
+                    window.blit(item, (cell_y, line_x))
+                    cell_y += 30
+
+                elif case == 9:#wayout
+                    window.blit(wayout, (cell_y, line_x))
+                    cell_y += 30
+
+                elif case == 5:#mcgyver
+                    window.blit(dk, (cell_y, line_x))
+                    pygame.display.flip()
+                    cell_y += 30
+
+                else:
+                    cell_y += 30
+            line_x += 30#line_x is the line, so go to next line
+        return(board)
+
+
+class McGyver:
+    """mc_gyver set with positions (0,0 to start), items and fct fight to exit
+    """
 
     def __init__(self):
-        """Mcgyver get - number of object son"""
+        """Mcgyver starts at 0,0 corner up and left and 0 items/goodies"""
         self.goodies = 0 # items collected
         self.position_x = 0 # starting position with board[x][y]
         self.position_y = 0
@@ -53,34 +88,37 @@ class mc_gyver:
         self.new_position_y = 0
 
     def fight(self):
+        """to win gyvwe must have collected 3 items"""
         if self.goodies == 3:
             win = 1
         else:
             win = 0
-        return win			
+        return win
 
-class position:
 
-    def __init__(self,position_x,position_y,board):
-        """Mcgyver get - number of object son"""
-        self.position_x = position_x # 
+class Position:
+    """to manage mcgyver's movement"""
+
+    def __init__(self, position_x, position_y, board):
+        """position is set with x and y + a board game"""
+        self.position_x = position_x #
         self.position_y = position_y
         self.board = board # board to check new position, wall, item or exit
 
-    def new_position (self):
-        """method to compute new positin for McGyver"""
+    def new_position(self):
+        """to check if a move is allowed"""
+        if self.position_x < 0 or self.position_y < 0 or self.position_x > 14 or self.position_y > 14: # out the board
+            move = 0#no move before cell assignation to avoid out of range error
 
-        cell = self.board[self.position_x][self.position_y]
-
-        if self.position_x < 0 or self.position_y < 0: # we go out the board game
-            move = 0#no move
-        if cell == 0: # wall ! can't move
-            move = 0#no move     
-        elif cell == 2 or cell == 3 or cell == 4:
-            move = 2#move +you got an item?
-        elif cell == 9:
-            move = 3#means fight to exit
-        else:
-            move = 1#RAS move that's it		
+        else:#if in the board we check if we can move
+            cell = self.board[self.position_x][self.position_y]
+            if cell == 0: # wall ! can't move
+                move = 0#no move
+            elif cell == 2 or cell == 3 or cell == 4:
+                move = 2#move +you got an item?
+            elif cell == 9:
+                move = 3#means fight to exit
+            else:
+                move = 1#RAS move that's it
 
         return move
