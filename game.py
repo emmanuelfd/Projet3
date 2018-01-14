@@ -1,11 +1,12 @@
+#pygame quit pour fermer fenetre + capture du clic etoile
 #! /usr/bin/env python3
 # coding: utf-8
 
+from random import randint
 import pygame
 from pygame.locals import *
-from random import randint
+#import premier
 from premier import *
-
 
 pitch = BoardGame.initialize_board(1)#load layout #1
 
@@ -20,39 +21,39 @@ window = pygame.display.set_mode((450, 450))#because 450 is 30pixel per sprite
 background = pygame.image.load("picture/fond.jpg").convert_alpha()#assign variable for background
 square = pygame.image.load("picture/mur.png").convert_alpha()#assign variable for wall
 item = pygame.image.load("picture/item.png").convert_alpha()#assign variable for items
-exit = pygame.image.load("picture/exit.png").convert_alpha()##assign variable for exit picture
+wayout = pygame.image.load("picture/exit.png").convert_alpha()##assign variable for exit picture
 dk = pygame.image.load("picture/dk.png").convert_alpha()#assign variable for donkey
-window.blit(background,(0,0))#load background on screen
+window.blit(background, (0, 0))#load background on screen
 
 while game_on:
-	
-    pygame.time.Clock().tick(30)#avoid  pitcture to blink
-    window.blit(background,(0,0))#reload the background to hide old position of giver
 
-    ##pitch = BoardGame.load_board(pitch) ## a tester 
-    
-##reload stuff on the board 
-    x=0
+    pygame.time.Clock().tick(30)#avoid  pitcture to blink
+    window.blit(background, (0, 0))#reload the background to hide old position of giver
+
+    pitch = BoardGame.load_board(pitch, window, square, item, dk, wayout) ## a tester
+
+##reload stuff on the board
+    x = 0
     for cases in pitch:
-        y=0
+        y = 0
         for case in cases:
             if case == 0:
-                window.blit(square,(y,x))
+                window.blit(square, (y, x))
                 y += 30
-         
+
             elif case == 2 or case == 3 or case == 4:#on pose les items
-                window.blit(item,(y,x))
+                window.blit(item, (y, x))
                 y += 30
-                
+
             elif case == 9:#on pose l arrivee
-                window.blit(exit,(y,x))
+                window.blit(wayout, (y, x))
                 y += 30
 
             elif case == 5:#on pose l arrivee
-                window.blit(dk,(y,x))
+                window.blit(dk, (y, x))
                 pygame.display.flip()
                 y += 30
-                
+
             else:
                 y +=30
         x+=30
@@ -75,14 +76,14 @@ while game_on:
 ##        gyver.new_position_x = gyver.position_x - 1
 ##        gyver.new_position_y = gyver.position_y
 ##    else:
-##        print("problem, you should enter L for left/R for right / U for up / D for down")	
+##        print("problem, you should enter L for left/R for right / U for up / D for down")
 
 #now with Pygame
     for event in pygame.event.get():##wait for keyboard events to move gyver position
         if event.type == KEYDOWN and event.key == K_LEFT:
             gyver.new_position_x = gyver.position_x
             gyver.new_position_y = gyver.position_y - 1
-            
+
         if event.type == KEYDOWN and event.key == K_RIGHT:
             gyver.new_position_x = gyver.position_x
             gyver.new_position_y = gyver.position_y + 1
@@ -94,15 +95,18 @@ while game_on:
         if event.type == KEYDOWN and event.key == K_UP:
             gyver.new_position_x = gyver.position_x - 1
             gyver.new_position_y = gyver.position_y
-	
+
+        if event.type == QUIT:
+            game_on = False
+
     print(gyver.new_position_x)
     print(gyver.new_position_y)
     #on passe posution avec les x, y et le board
-    next_move = Position(gyver.new_position_x,gyver.new_position_y,pitch) # not sur we need this one TBC
+    next_move = Position(gyver.new_position_x, gyver.new_position_y,pitch) # not sur we need this one TBC
 
     next_move = Position.new_position(next_move)#
     #print(str(next_move) + "ttttr")
-	
+
     if next_move == 0: # wall or out of boundary
         print("can't go that way !")
         continue
@@ -124,10 +128,10 @@ while game_on:
         exit = gyver.fight()
         if exit == 1:
             print("well you are out!!")
-            game_on = False#breaking the while to stop the game	
+            game_on = False#breaking the while to stop the game
         else:
             print("you lost! remember to cocllet  3 items first !!")
-            game_on = False #breaking the while to stop the game	
+            game_on = False #breaking the while to stop the game
     else:
         print("problem move")#shouldn't enter here
 	
@@ -135,4 +139,5 @@ while game_on:
     print(pitch)
 	
    #affiche le board
-   # fin boucle 
+   # fin boucle
+pygame.quit()#to close the board
