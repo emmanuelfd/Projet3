@@ -2,7 +2,7 @@
 # coding: utf-8
 from random import randint
 import os
-
+import pygame
 
 class BoardGame:
     """in order to create the board game + loading items"""
@@ -45,33 +45,41 @@ class BoardGame:
                 continue # it's a wall back to the while, no incrementaton another try/
 
         return board
-
-    def load_board(self, board, window, square, item, dk, wayout):
-        """load pictures using pygame - board, window, square, item, dk, wayout"""
+    @classmethod
+    def load_board(self, board, window, wall, floor, item, ether, mcgyver, wayout):
+        """load pictures using pygame - board, window, wall, item, mcgyver, wayout"""
         line_x = 0#first line
         for cases in board:
             cell_y = 0#first column
             for case in cases:
                 if case == 0:
-                    window.blit(square, (cell_y, line_x))
-                    cell_y += 30#30 because cell is 30 px - so go to next cell
+                    window.blit(wall, (cell_y, line_x))
+                    cell_y += 40#30 because cell is 30 px - so go to next cell
 
-                elif case == 2 or case == 3 or case == 4:#if items
+                elif case == 1:#if corridor
+                    window.blit(floor, (cell_y, line_x))
+                    cell_y += 40
+
+                elif case == 2:#if items
+                    window.blit(ether, (cell_y, line_x))
+                    cell_y += 40
+
+                elif case == 3 or case == 4:#if items
                     window.blit(item, (cell_y, line_x))
-                    cell_y += 30
+                    cell_y += 40
 
                 elif case == 9:#wayout
                     window.blit(wayout, (cell_y, line_x))
-                    cell_y += 30
+                    cell_y += 40
 
                 elif case == 5:#mcgyver
-                    window.blit(dk, (cell_y, line_x))
+                    window.blit(mcgyver, (cell_y, line_x))
                     pygame.display.flip()
-                    cell_y += 30
+                    cell_y += 40
 
                 else:
-                    cell_y += 30
-            line_x += 30#line_x is the line, so go to next line
+                    cell_y += 40
+            line_x += 40#line_x is the line, so go to next line
         return(board)
 
 
